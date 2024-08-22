@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Layering and Data Transmission</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 150vh;
+            width: 90vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0; /* 背景色，可根据需要调整 */
+            font-family: "Times New Roman", Times, serif;
+            position: relative; /* 使按钮和时钟相对于页面定位 */
+        }
+        .container {
+            position: relative;
+            width: 1000px; /* 设置容器宽度 */
+            height: 500px; /* 设置容器高度 */
+            margin-bottom: 50px; /* 添加底部间距 */
+        }
+        img {
+            position: absolute;
+        }
+        .img1 {
+            width: 150px;
+            height: auto;
+        }
+        .img2 {
+            width: 280px;
+            height: auto;
+        }
+
+        /* 最底层的8张img1，水平排列 */
+        .img1-1 { left: 0; bottom: 100px; }
+        .img1-2 { left: 150px; bottom: 100px; }
+        .img1-3 { left: 300px; bottom: 100px; }
+        .img1-4 { left: 450px; bottom: 100px; }
+        .img1-5 { left: 600px; bottom: 100px; }
+        .img1-6 { left: 750px; bottom: 100px; }
+        .img1-7 { left: 900px; bottom: 100px; }
+        .img1-8 { left: 1050px; bottom: 100px; }
+        
+        /* 倒数第三层的4张img2，水平排列，居中对齐 */
+        .img2-layer1-1 { left: 20px; bottom: 275px; }
+        .img2-layer1-2 { left: 310px; bottom: 275px; }
+        .img2-layer1-3 { left: 600px; bottom: 275px; }
+        .img2-layer1-4 { left: 890px; bottom: 275px; }
+        
+        /* 倒数第二层的4张img2，水平排列，居中对齐 */
+        .img2-layer2-1 { left: 20px; bottom: 450px; }
+        .img2-layer2-2 { left: 310px; bottom: 450px; }
+        .img2-layer2-3 { left: 600px; bottom: 450px; }
+        .img2-layer2-4 { left: 890px; bottom: 450px; }
+        
+        /* 最顶层的2张img2，居中对齐 */
+        .img2-layer3-1 { left: 310px; bottom: 625px; }
+        .img2-layer3-2 { left: 600px; bottom: 625px; }
+
+        /* 数据传输表示部分的样式 */
+        .line-container1121 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -230px; /* 调整左右偏移 */
+            top: -635px; /* 调整上下偏移 */
+        }
+
+        .line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-27deg); /* 调整倾斜角度 */
+        }
+
+        .line-container1221 {
+            width: 40%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -60px; /* 调整左右偏移 */
+            top: -635px; /* 调整上下偏移 */
+        }
+
+        .line1 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-15deg); /* 调整倾斜角度 */
+        }
+
+        .line-container1122 {
+            width: 11%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -40px; /* 调整左右偏移 */
+            top: -630px; /* 调整上下偏移 */
+        }
+
+        .line2 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-90deg); /* 调整倾斜角度 */
+        }
+
+        .line-container1222 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 100px; /* 调整左右偏移 */
+            top: -635px; /* 调整上下偏移 */
+        }
+
+        .line3 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-27deg); /* 调整倾斜角度 */
+        }
+
+        .line-container1123 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 100px; /* 调整左右偏移 */
+            top: -635px; /* 调整上下偏移 */
+        }
+
+        .line4 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(28deg); /* 调整倾斜角度 */
+        }
+
+        .line-container1223 {
+            width: 11%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 250px; /* 调整左右偏移 */
+            top: -630px; /* 调整上下偏移 */
+        }
+
+        .line5 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(90deg); /* 调整倾斜角度 */
+        }
+
+        .line-container1124 {
+            width: 40%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 250px; /* 调整左右偏移 */
+            top: -640px; /* 调整上下偏移 */
+        }
+
+        .line6 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(15deg); /* 调整倾斜角度 */
+        }
+
+        .line-container1224 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 400px; /* 调整左右偏移 */
+            top: -640px; /* 调整上下偏移 */
+        }
+
+        .line7 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(27deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3121 {
+            width: 11%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -330px; /* 调整左右偏移 */
+            top: -450px; /* 调整上下偏移 */
+        }
+
+        .line8 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(90deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3122 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -200px; /* 调整左右偏移 */
+            top: -460px; /* 调整上下偏移 */
+        }
+
+        .line9 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-27deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3221 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -200px; /* 调整左右偏移 */
+            top: -460px; /* 调整上下偏移 */
+        }
+
+        .line10 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(27deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3222 {
+            width: 11%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -50px; /* 调整左右偏移 */
+            top: -450px; /* 调整上下偏移 */
+        }
+
+        .line11 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(90deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3323 {
+            width: 11%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 240px; /* 调整左右偏移 */
+            top: -450px; /* 调整上下偏移 */
+        }
+
+        .line12 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(90deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3324 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 380px; /* 调整左右偏移 */
+            top: -460px; /* 调整上下偏移 */
+        }
+
+        .line13 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-27deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3423 {
+            width: 20%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 380px; /* 调整左右偏移 */
+            top: -460px; /* 调整上下偏移 */
+        }
+
+        .line14 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(27deg); /* 调整倾斜角度 */
+        }
+
+        .line-container3424 {
+            width: 11%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 540px; /* 调整左右偏移 */
+            top: -450px; /* 调整上下偏移 */
+        }
+
+        .line15 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(90deg); /* 调整倾斜角度 */
+        }
+        .line-container4131 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -400px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line16 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-65deg); /* 调整倾斜角度 */
+        }
+        .line-container4231 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -320px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line17 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(65deg); /* 调整倾斜角度 */
+        }
+        .line-container4332 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -100px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line18 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-65deg); /* 调整倾斜角度 */
+        }
+        .line-container4432 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -20px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line19 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(65deg); /* 调整倾斜角度 */
+        }
+        .line-container4533 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 200px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line20 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-65deg); /* 调整倾斜角度 */
+        }
+        .line-container4633 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 280px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line21 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(65deg); /* 调整倾斜角度 */
+        }
+        .line-container4734 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 500px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line22 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(-65deg); /* 调整倾斜角度 */
+        }
+        .line-container4834 {
+            width: 12%; /* 调整虚线长度 */
+            height: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 580px; /* 调整左右偏移 */
+            top: -285px; /* 调整上下偏移 */
+        }
+
+        .line23 {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, transparent 50%, #0073e6 50%, #0073e6) repeat-x;
+            background-size: 20px 2px;
+            animation: dashMove 1s linear infinite;
+            transform: rotate(65deg); /* 调整倾斜角度 */
+        }
+
+        @keyframes dashMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 20px 0;
+            }
+        }
+
+        /* 按钮样式 */
+        #startButton, #submitButton, #viewButton, #uploadButton, #viewResultButton, .id-button, #okButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0073e6;
+            color: white;
+            border: none; /* 取消外框 */
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none; /* 去掉点击后的默认外框 */
+        }
+
+        #buttonContainer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 竖框样式 */
+        #verticalBoxContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 120px;
+            right: 1160px;
+            width: 120px;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        #verticalBox {
+            width: 100%;
+            max-height: 380px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        .id-button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .id-button:hover {
+            background-color: #e0e0e0;
+        }
+        #uploadModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        /* 简单动画示例 */
+        @keyframes exampleAnimation {
+            from {transform: scale(1);}
+            to {transform: scale(1.2);}
+        }
+
+        .animate {
+            animation: exampleAnimation 0.5s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 开始按钮 -->
+    <div id="buttonContainer">
+        <!-- 开始按钮 -->
+        <button id="startButton">开始路径规划</button>
+        <!-- 查看按钮 -->
+        <button id="viewButton">路径显示</button>
+    </div>
+
+    <div id="verticalBoxContainer">
+        <div id="verticalBox"></div>
+        <div style="margin-top: 10px;">
+            <button id="uploadButton" style="margin-right: 5px;">上传</button>
+            <button id="viewResultButton" style="margin-top: 10px">查看结果</button>
+        </div>
+    </div>
+
+    <div id="infoBox" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
+        <!-- 这里会显示 Flow ID 和 Route -->
+    </div>
+
+    <!-- 上传提示框 -->
+    <div id="uploadModal">
+        <p id="uploadMessage">上传给tofino交换机中</p>
+        <button id="okButton" style="display: none;">OK</button>
+    </div>
+    
+
+    <div class="container">
+        <!-- 8张img1在最底层，每张图片对应一个数据库 -->
+        <a href="./server.html?dbName=db1"><img src="./img/server_img.jpeg" class="img1 img1-1"></a>
+        <a href="./server.html?dbName=db2"><img src="./img/server_img.jpeg" class="img1 img1-2"></a>
+        <a href="./server.html?dbName=db3"><img src="./img/server_img.jpeg" class="img1 img1-3"></a>
+        <a href="./server.html?dbName=db4"><img src="./img/server_img.jpeg" class="img1 img1-4"></a>
+        <a href="./server.html?dbName=db5"><img src="./img/server_img.jpeg" class="img1 img1-5"></a>
+        <a href="./server.html?dbName=db6"><img src="./img/server_img.jpeg" class="img1 img1-6"></a>
+        <a href="./server.html?dbName=db7"><img src="./img/server_img.jpeg" class="img1 img1-7"></a>
+        <a href="./server.html?dbName=db8"><img src="./img/server_img.jpeg" class="img1 img1-8"></a>
+
+        <!-- 倒数第三层的4张img2，每张图片对应一个数据库 -->
+        <a href="./switch.html?dbName=db9"><img src="./img/switch_img.jpeg" class="img2 img2-layer1-1"></a>
+        <a href="./switch.html?dbName=db10"><img src="./img/switch_img.jpeg" class="img2 img2-layer1-2"></a>
+        <a href="./switch.html?dbName=db11"><img src="./img/switch_img.jpeg" class="img2 img2-layer1-3"></a>
+        <a href="./switch.html?dbName=db12"><img src="./img/switch_img.jpeg" class="img2 img2-layer1-4"></a>
+
+        <!-- 倒数第二层的4张img2，每张图片对应一个数据库 -->
+        <a href="./switch.html?dbName=db13"><img src="./img/switch_img.jpeg" class="img2 img2-layer2-1"></a>
+        <a href="./switch.html?dbName=db14"><img src="./img/switch_img.jpeg" class="img2 img2-layer2-2"></a>
+        <a href="./switch.html?dbName=db15"><img src="./img/switch_img.jpeg" class="img2 img2-layer2-3"></a>
+        <a href="./switch.html?dbName=db16"><img src="./img/switch_img.jpeg" class="img2 img2-layer2-4"></a>
+
+        <!-- 最顶层的2张img2，每张图片对应一个数据库 -->
+        <a href="./switch.html?dbName=db17"><img src="./img/switch_img.jpeg" class="img2 img2-layer3-1"></a>
+        <a href="./switch.html?dbName=db18"><img src="./img/switch_img.jpeg" class="img2 img2-layer3-2"></a>
+    </div>
+
+    <!-- 数据传输表示部分 -->
+
+
+
+     <!-- 数据传输表示部分 -->
+     <div class="line-container">
+        <div class="line"></div>
+    </div>
+
+    <script>
+        // 获取时钟和按钮元素
+        const startButton = document.getElementById('startButton');
+        const verticalBox = document.getElementById('verticalBox');
+        const uploadButton = document.getElementById('uploadButton');
+        const viewResultButton = document.getElementById('viewResultButton');
+        const uploadModal = document.getElementById('uploadModal');
+        const uploadMessage = document.getElementById('uploadMessage');
+        const okButton = document.getElementById('okButton');
+        // 点击开始按钮时，开始计时并合并数据库
+        startButton.addEventListener('click', async function() {
+            // 首先合并数据库
+            try {
+                const response = await fetch('/merge_databases', {
+            method: 'POST',
+        });
+                console.log('Start button clicked');  // 确认按钮被点击
+
+                if (response.ok) {
+                    console.log('Databases merged successfully.');
+                    await fetchAndDisplayIds();
+                } else {
+                    console.error('Failed to merge databases.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } 
+        });
+
+        async function fetchAndDisplayIds() {
+            verticalBox.innerHTML = ''; // 清空现有内容
+            try {
+                const response = await fetch('/get_result_data');
+                if (response.ok) {
+                    const data = await response.json();
+                    updateVerticalBox(data);
+                } else {
+                    console.error('Failed to fetch data from result_db.db.');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // 更新竖框内容
+        function updateVerticalBox(data) {
+            data.forEach(item => {
+                const button = document.createElement('button');
+                button.textContent = `数据流ID: ${item}`;
+                button.className = 'id-button';
+                button.addEventListener('click', () => triggerAnimation(item));
+                verticalBox.appendChild(button);
+            });
+        }
+
+        // 动画触发函数
+        async function triggerAnimation(id) {
+            console.log(`Button with ID ${id} clicked`);
+
+            try {
+                // 使用 fetch 请求获取与 id 对应的 route 信息
+                const response = await fetch(`/get_route?flow_id=${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.route) {
+                        displayRouteInfo(id, data.route);
+                    } else {
+                        console.error('No route found for the given flow_id.');
+                    }
+                } else {
+                    console.error('Failed to fetch route.');
+                }
+            } catch (error) {
+                console.error('Error fetching route:', error);
+            }
+        }
+
+        // 显示 route 信息
+        function displayRouteInfo(flow_id, route) {
+
+            const routeArray = route.split('->').map(item => item.trim());
+
+            const strArray = [];
+            for (let i = 0; i < routeArray.length - 1; i++) {
+                strArray.push(`${routeArray[i]}->${routeArray[i+1]}`);
+            }
+
+            // 输出 strArray 到浏览器的日志
+            console.log(`Str Array for Flow ID ${flow_id}:`, strArray);
+            strArray.forEach(element => {
+                if (element === "s5->s9" || element === "s9->s5") {
+                    const existingLine = document.querySelector('.line-container1121');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1121';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s5->s10" || element === "s10->s5") {
+                    const existingLine = document.querySelector('.line-container1221');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1221';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line1';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s6->s9" || element === "s9->s6") {
+                    const existingLine = document.querySelector('.line-container1122');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1122';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line2';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s6->s10" || element === "s10->s6") {
+                    const existingLine = document.querySelector('.line-container1222');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1222';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line3';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s7->s9" || element === "s9->s7") {
+                    const existingLine = document.querySelector('.line-container1123');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1123';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line4';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s7->s10" || element === "s10->s7") {
+                    const existingLine = document.querySelector('.line-container1223');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1223';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line5';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s9->s8" || element === "s8->s9") {
+                    const existingLine = document.querySelector('.line-container1124');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1124';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line6';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s8->s10" || element === "s10->s8") {
+                    const existingLine = document.querySelector('.line-container1224');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container1224';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line7';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s1->s5" || element === "s5->s1") {
+                    const existingLine = document.querySelector('.line-container3121');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3121';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line8';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s1->s6" || element === "s6->s1") {
+                    const existingLine = document.querySelector('.line-container3122');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3122';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line9';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s2->s5" || element === "s5->s2") {
+                    const existingLine = document.querySelector('.line-container3221');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3221';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line10';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s2->s6" || element === "s6->s2") {
+                    const existingLine = document.querySelector('.line-container3222');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3222';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line11';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s3->s7" || element === "s7->s3") {
+                    const existingLine = document.querySelector('.line-container3323');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3323';
+                        
+                        const line = document.createElement('div');
+                        line.className = 'line12';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s3->s8" || element === "s8->s3") {
+                    const existingLine = document.querySelector('.line-container3324');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3324';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line13';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s4->s7" || element === "s7->s4") {
+                    const existingLine = document.querySelector('.line-container3423');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3423';
+                        
+                        const line = document.createElement('div');
+                        line.className = 'line14';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "s4->s8" || element === "s8->s4") {
+                    const existingLine = document.querySelector('.line-container3424');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container3424';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line15';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "1->s1" || element === "s1->1") {
+                    const existingLine = document.querySelector('.line-container4131');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4131';
+
+                        const line = document.createElement('div');
+                        line.className = 'line16';
+
+                        container.appendChild(line);
+
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "2->s1" || element === "s1->2") {
+                    const existingLine = document.querySelector('.line-container4231');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4231';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line17';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "3->s2" || element === "s2->3") {
+                    const existingLine = document.querySelector('.line-container4332');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4332';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line18';
+                        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "4->s2" || element === "s2->4") {
+                    const existingLine = document.querySelector('.line-container4432');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4432';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line19';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "5->s3" || element === "s3->5") {
+                    const existingLine = document.querySelector('.line-container4533');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4533';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line20';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "6->s3" || element === "s3->6") {
+                    const existingLine = document.querySelector('.line-container4633');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4633';
+                        
+                        const line = document.createElement('div');
+                        line.className = 'line21';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "7->s4" || element === "s4->7") {
+                    const existingLine = document.querySelector('.line-container4734');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4734';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line22';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+                if (element === "4->s8" || element === "s8->4") {
+                    const existingLine = document.querySelector('.line-container4438');
+                    if (existingLine) {
+                        existingLine.remove(); // 将线条移除
+                    } else {
+                        const container = document.createElement('div');
+                        container.className = 'line-container4438';
+        
+                        const line = document.createElement('div');
+                        line.className = 'line23';
+        
+                        container.appendChild(line);
+        
+                        // 将该元素添加到页面的某个位置
+                        document.body.appendChild(container);
+                    }
+                }
+            });
+        }
+
+
+        // 上传按钮点击事件
+        uploadButton.addEventListener('click', function() {
+        // 显示上传提示框
+        uploadModal.style.display = 'block';
+
+        // 模拟上传过程
+        setTimeout(function() {
+            uploadMessage.textContent = '已返回结果';
+            okButton.style.display = 'block';
+            }, 5000); // 5秒后显示已返回结果
+        });
+
+        // OK 按钮点击事件
+        okButton.addEventListener('click', function() {
+            // 关闭提示框
+            uploadModal.style.display = 'none';
+            okButton.style.display = 'none'; // 隐藏OK按钮
+            uploadMessage.textContent = '上传给tofino交换机中...'; // 重置提示内容
+        });
+
+        // 查看结果按钮点击事件
+        viewResultButton.addEventListener('click', function() {
+            // 跳转到result.html页面
+            window.location.href = './我的index.html';
+        });
+        
+        // 查看按钮点击事件
+        viewButton.addEventListener('click', function() {
+            // 跳转到show.html页面
+            window.location.href = './show.html';
+        });
+
+
+        // 页面加载时自动获取并显示数据
+        window.onload = fetchAndDisplayIds;
+    </script>
+</body>
+</html>

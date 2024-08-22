@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器数据流信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .data-visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .data-flow {
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .flow-data {
+        display: flex;
+        align-items: baseline;
+        }
+
+        .flow-data strong {
+            min-width: 720px; /* 根据需要调整宽度 */
+        }
+
+        .flow-data span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .data-flow p {
+            margin: 5px 0;
+        }
+        .delete-button {
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .new-flow-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .new-flow-button button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .new-flow-button button:hover {
+            background-color: #005bb5;
+        }
+        .new-flow-form {
+            display: none;
+            flex-direction: column;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .new-flow-form input, .new-flow-form textarea, .new-flow-form select {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .new-flow-form button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .new-flow-form button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>服务器数据流信息</h1>
+        <div class="data-visualization" id="data-visualization">
+            <!-- 数据流信息的可视化显示部分 -->
+        </div>
+
+        <div class="new-flow-button">
+            <button onclick="toggleForm()">新建</button>
+        </div>
+
+        <div class="new-flow-form" id="new-flow-form">
+            <h2>请输入新建数据流信息</h2>
+            <input type="text" id="source" placeholder="起始IP" required>
+            <input type="text" id="destination" placeholder="目标IP" required>
+            <input type="number" id="tcp_udp_port" placeholder="TCP/UDP端口" required>
+            <input type="number" id="priority" placeholder="优先级" required>
+            <input type="number" id="cost" placeholder="所需带宽" required>
+            <textarea id="time_expect" placeholder="期望时间" required></textarea>
+            <select id="isWusunFlag">
+                <option value="0">可以丢失</option>
+                <option value="1">不可丢失</option>
+            </select>
+            <select id="isObserve">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+            <button onclick="addNewFlow()">提交</button>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const dbName = urlParams.get('dbName');  // 获取当前数据库名称
+
+        async function fetchData() {
+            const response = await fetch(`/get_data?dbName=${dbName}`);
+            const data = await response.json();
+            renderDataFlow(data);
+        }
+
+        function renderDataFlow(dataFlow) {
+            const container = document.getElementById('data-visualization');
+            container.innerHTML = '';
+
+            dataFlow.forEach((flow) => {
+                const flowDiv = document.createElement('div');
+                flowDiv.className = 'data-flow';
+                flowDiv.innerHTML = `
+                    <div>
+                        <p class="flow-data"><strong>起始IP:</strong> ${flow.source}</p>
+                        <p class="flow-data"><strong>目标IP:</strong> ${flow.destination}</p>
+                        <p class="flow-data"><strong>TCP/UDP 端口:</strong> ${flow.tcp_udp_port}</p>
+                        <p class="flow-data"><strong>优先级:</strong> ${flow.priority}</p>
+                        <p class="flow-data"><strong>所需带宽:</strong> ${flow.cost}</p>
+                        <p class="flow-data"><strong>期望时间:</strong> <span>${flow.time_expect.join(', ')}</span></p>
+                        <p class="flow-data"><strong>无损标志:</strong> <span>${flow.isWusunFlag === 1 ? 'Cannot Loss' : 'Can Loss'}</span></p>
+                        <p class="flow-data"><strong>是否观察:</strong> <span>${flow.isObserve === 1 ? 'Yes' : 'No'}</span></p>
+                    </div>
+                    <button class="delete-button" onclick="deleteFlow(${flow.id})">删除</button>
+                `;
+                container.appendChild(flowDiv);
+            });
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('new-flow-form');
+            form.style.display = form.style.display === 'none' || form.style.display === '' ? 'flex' : 'none';
+        }
+
+        async function addNewFlow() {
+            const source = document.getElementById('source').value;
+            const destination = document.getElementById('destination').value;
+            const tcp_udp_port = parseInt(document.getElementById('tcp_udp_port').value);
+            const priority = parseInt(document.getElementById('priority').value);
+            const cost = parseInt(document.getElementById('cost').value);
+            const time_expect = document.getElementById('time_expect').value.split(',').map(Number);
+            const isWusunFlag = parseInt(document.getElementById('isWusunFlag').value);
+            const isObserve = parseInt(document.getElementById('isObserve').value);
+
+            const newFlow = {
+                source,
+                destination,
+                tcp_udp_port,
+                priority,
+                cost,
+                time_expect,
+                isWusunFlag,
+                isObserve
+            };
+
+            const response = await fetch(`/add_data?dbName=${dbName}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newFlow)
+            });
+
+            if (response.ok) {
+                fetchData(); // 重新获取并渲染数据
+                document.getElementById('new-flow-form').reset();
+                toggleForm();
+            } else {
+                console.error('Failed to add new data flow');
+            }
+        }
+
+        async function deleteFlow(id) {
+            const response = await fetch(`/delete_data?dbName=${dbName}&id=${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                fetchData(); // 重新获取并渲染数据
+            } else {
+                console.error('Failed to delete data flow');
+            }
+        }
+
+        // 页面加载时获取并渲染数据流信息
+        fetchData();
+    </script>
+</body>
+</html>

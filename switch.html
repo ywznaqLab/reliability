@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch Resource Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .db-info {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .data-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #0073e6;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .data-row:last-child {
+            border-bottom: none;
+        }
+        .no-data {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>交换机资源情况</h1>
+        <div id="db-info" class="db-info"></div>
+
+        <div class="data-header">
+            <div>起始IP</div>
+            <div>目的IP</div>
+            <div>TCP/UDP 端口</div>
+            <div>优先级</div>
+            <div>所需资源</div>
+            <div>期望时间</div>
+            <div>无损标志(Yes/No)</div>
+            <div>是否观察(Yes/No)</div>
+        </div>
+
+        <div id="data-visualization">
+            <!-- 这里是数据流信息的展示区 -->
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const dbName = urlParams.get('dbName');  // 获取当前数据库名称
+
+        // 显示数据库信息
+        document.getElementById('db-info').innerText = `数据库总带宽10G`;
+
+        async function fetchData() {
+            const response = await fetch(`/get_data?dbName=${dbName}`);
+            const data = await response.json();
+            renderDataFlow(data);
+        }
+
+        function renderDataFlow(dataFlow) {
+            const container = document.getElementById('data-visualization');
+            container.innerHTML = '';
+
+            if (dataFlow.length === 0) {
+                // 如果数据为空，显示默认的 "～"
+                const noDataDiv = document.createElement('div');
+                noDataDiv.className = 'data-row';
+                noDataDiv.innerHTML = `
+                    <div>～</div>
+                    <div>～</div>
+                    <div>～</div>
+                    <div>～</div>
+                    <div>～</div>
+                    <div>～</div>
+                    <div>～</div>
+                    <div>～</div>
+                `;
+                container.appendChild(noDataDiv);
+            } else {
+                // 否则，显示实际数据
+                dataFlow.forEach((flow) => {
+                    const flowDiv = document.createElement('div');
+                    flowDiv.className = 'data-row';
+                    flowDiv.innerHTML = `
+                        <div>${flow.source}</div>
+                        <div>${flow.destination}</div>
+                        <div>${flow.tcp_udp_port}</div>
+                        <div>${flow.priority}</div>
+                        <div>${flow.cost}</div>
+                        <div>${flow.time_expect.join(', ')}</div>
+                        <div>${flow.isWusunFlag === 1 ? 'Cannot Loss' : 'Can Loss'}</div>
+                        <div>${flow.isObserve === 1 ? 'Yes' : 'No'}</div>
+                    `;
+                    container.appendChild(flowDiv);
+                });
+            }
+        }
+
+        // 页面加载时获取并渲染数据流信息
+        fetchData();
+    </script>
+</body>
+</html>
